@@ -1,0 +1,49 @@
+---
+title: "Linear models Ex1"
+author: "Roi Hezkiyahu"
+date: "3 3 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+![Q1](Q1.png)
+
+**a**
+
+*we will imput* $x_1, x_2$ *and get:*
+
+$\mu_1 = \beta_0$
+
+$\mu_2 = \beta_0 + \beta_1 \Rightarrow \beta_1 = \mu_2 - \mu_1$
+
+
+**b**
+
+$(1) \mu_1 = \beta_0 - \frac{1}{2}\beta_1$
+
+$(2) \mu_2 = \beta_0 + \frac{1}{2}\beta_1$
+
+$(1)+(2) \Rightarrow \mu_1+\mu_2 = 2 \beta_0 \Rightarrow \beta_0 = \frac{\mu_1+\mu_2}{2}$
+
+$(2)-(1) \Rightarrow \mu_2-\mu_1 = \beta_1 \Rightarrow \beta_0$
+
+**c**
+
+$(3) \mu_1 = \beta_0 + a\beta_1$
+
+$(4) \mu_2 = \beta_0 + b\beta_1$
+
+$(3) - (4) \Rightarrow \mu_1-\mu_2 = (a-b)\beta_1 \Rightarrow \beta_1 = \frac{\mu_1-\mu_2}{a-b}$
+
+*imput * $\beta_0$ *in (3)* 
+
+$\mu_1 = \beta_0 + a\frac{\mu_1-\mu_2}{a-b} \Rightarrow \beta_0 = \frac{(a-b)\mu_1 - a\mu_1+a\mu_2}{a-b}= \frac{a\mu_2-b\mu_1}{a-b}$
+
+```{r}
+
+```
+
+
