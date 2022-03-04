@@ -148,5 +148,62 @@ X^tX =
   \sum_ix_i & \sum_i x_i^2 
   \end{bmatrix}
 \\
-(X^tX)^{-1}
+(X^tX)^{-1} = \frac{1}{n\sum_ix_i^2-(\sum_i(x_i))^2}\begin{bmatrix}
+  \sum_i x_i^2 & -\sum_ix_i \\
+  -\sum_ix_i &  n
+  \end{bmatrix} :=C\begin{bmatrix}
+  \sum_i x_i^2 & -\sum_ix_i \\
+  -\sum_ix_i &  n
+  \end{bmatrix}
+  \\
+  (X^tX)^{-1}X^t=C \begin{bmatrix}
+  \sum_ix_i^2 - x_1\sum_ix_i&, \ldots&,&\sum_ix_i^2 - x_n\sum_ix_i\\
+  nx_1 - \sum_i x_i&, \ldots&,&nx_n - \sum_i x_i
+  \end{bmatrix}
+  \\
+  X(X^tX)^{-1}X^t_{jj} = C(\sum_ix_i^2-x_j\sum_ix_i+nx_j^2-x_j\sum_ix_i) = C(\sum_ix_i^2-2x_j\sum_ix_i+nx_j^2)=
+  C(\sum_ix_i^2+n(x_j^2-2x_j\bar x +\bar x^2 -\bar x^2)) =\\
+  = C(\sum_ix_i^2 - n\bar x^2 +n(x_j-\bar x^2)) = \frac{\sum_ix_i^2 - n\bar x^2 +n(x_j-\bar x^2)}{n\sum_ix_i^2-n^2\bar x^2} = \frac{1}{n} + \frac{x_j-\bar x^2}{\sum_ix_i^2-n\bar x^2} = \frac{1}{n} + \frac{x_j-\bar x^2}{\sum_i(x_i-x)^2}
+$$
+
+![Q4](Q4.png)
+
+**a**
+
+$$
+denote\,\,V^{-1}\,\, as\,\, W \\
+(y-X\beta)^tW(y-X\beta) = (y-X\beta)^y(Wy-WX\beta) = y^tWy-y^tWX\beta-\beta^tX^tWy+\beta^tX^tX\beta\\
+\frac{\partial(y-X\beta)^tW(y-X\beta)}{\partial\beta} = -X^tWy-X^tWy+2X^tWX\beta :=0 \Rightarrow\\
+X^tWX\beta = X^tWy \Rightarrow \hat\beta_{WLS} = (X^tWX)^{-1}X^tWy
+$$
+
+**b**
+
+*yes i will show that the expected value of the estimator is:* $\beta$
+
+$$
+E(\hat\beta_{WLS}) = E((X^tWX)^{-1}X^tWy) = E((X^tWX)^{-1}X^tWX\beta) = E(\beta) = \beta
+$$
+
+**c**
+
+$$
+Var(\beta_{WLS}) = Var((X^tWX)^{-1}X^tWy) = (X^tWX)^{-1}X^tW\,Var(y) ((X^tWX)^{-1}X^tW)^t = (X^tWX)^{-1}X^tWVWX(X^tWX)^{-1}=\\
+=(X^tWX)^{-1}X^tWX(X^tWX)^{-1} = (X^tWX)^{-1}
+$$
+
+**d**
+
+$$
+\hat y = Hy = X\beta_{WLS} = X(X^tWX)^{-1}X^tWy \,\,\, \forall y \Rightarrow H = X(X^tWX)^{-1}X^tW
+$$
+
+**e**
+
+$$
+\varepsilon_i \sim N(0,\sigma_i^2) \Rightarrow \vec{y} \sim N(X\beta,V)
+\\L(\beta,V,\vec{y}) = \frac{1}{\sqrt{(2\pi)^n}|V|} e^{-\frac{1}{2}(y-X\beta)^tW(y-X\beta)}
+\\log(L(\beta,V,\vec{y})) = C_V - \frac{(y-X\beta)^tW(y-X\beta)}{2}\\
+where\,C_v\, is \,a \, constant \, given \, V
+\\ \beta_{WLS} = argmin_{\beta}((y-X\beta)^tW(y-X\beta)) = argmax_{\beta}( - (y-X\beta)^tW(y-X\beta)) = argmax_{\beta}(log(L(\beta,V,\vec{y}))) = argmax_{\beta}(L(\beta,V,\vec{y})) =\beta_{MLE}
 $$
