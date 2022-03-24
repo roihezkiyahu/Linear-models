@@ -99,6 +99,8 @@ library(tidyverse)
 library(glue)
 library(patchwork)
 library(tidymodels)
+library(glmnet)
+library(pls)
 ```
 
 
@@ -226,38 +228,119 @@ model_with_inter<- lm(lpsa~.+svi*lcavol+svi*lweight+svi * age + svi*lbph + svi*l
 AIC <- stats::step(model_with_inter,direction  = "both",trace = 0)
 BIC <- stats::step(model_with_inter,direction  = "both",trace = 0, k = log(75))
 RIC <- stats::step(model_with_inter,direction  = "both",trace = 0, k = 2*log(15))
-AIC
-BIC
-RIC
+summary(AIC)
+summary(BIC)
+summary(RIC)
+anova(BIC,AIC)
 ```
+
+*we can see that both RIC and BIC lead to the same model*
+
+*from the anova result we can conclude that AIC model is no better then BIC model*
 
 ## d
 
 ```{r}
-
+lambda_cv <- cv.glmnet(model.matrix(model_with_inter),Prostate_tr$lpsa,alpha=1)$lambda.min
+lasso_model <- glmnet(model.matrix(model_with_inter),Prostate_tr$lpsa,alpha=1,lambda = lambda_cv)
+print(round(predict(lasso_model,s=lambda_cv,type="coefficients"),5))
 ```
+
+*we can see that the lasso model is different from the AIC,BIC models, but the lcavol,lweight and svi are still importat, interactions have changed and we added lbph*
 
 ## e
 
 ```{r}
-
+#pcr
+pcr_model <- pcr(lpsa~.,data = Prostate_tr,scale=T,validation="CV")
+summary(pcr_model)
+validationplot(pcr_model, val.type = "R2")
+#pls
+pls_model <- plsr(lpsa~.,data = Prostate_tr,scale=T,validation="CV")
+summary(pls_model)
+validationplot(pls_model, val.type = "R2")
 ```
+
+*a problem that might arise is that some of the features are correlated and multicollinearity might impar these models*
+
+*we can see that for the pcr model 3 components are sufficent, adding more components does not incrase model preformance very much*
+
+*for ths pls model 3 components reach the best R^2*
 
 ## f
 
-```{r}
+*we can use the test set mse in order to compare the models*
 
+```{r warning=FALSE}
+models <- list(model_main,
+model_with_inter,
+AIC,
+BIC,
+RIC,
+lasso_model,
+pls_model,
+pcr_model)
+model_names <- c("model_main",
+"model_with_inter",
+"AIC",
+"BIC",
+"RIC",
+"lasso_model",
+"pls_model",
+"pcr_model")
+mse = c()
+for (i in 1:length(models)){
+  if (i <= 5){y_pred <- predict(models[[i]],Prostate_te)}
+  if (i==6) {y_pred <- predict(models[[i]],model.matrix(lpsa~.+svi*lcavol+svi*lweight+svi * age + svi*lbph + svi*lcp+svi*gleason+svi*pgg45,Prostate_te))}
+  if (i >6){y_pred <- predict(models[[i]],Prostate_te,ncomp = 3)}
+  mse[i] <- mean((y_pred - Prostate_te$lpsa)^2)
+}
+tibble(model = model_names,"mse" = mse) %>% arrange(mse)
 ```
+
+*we can see that our best choise would be the lasso model*
 
 ## g
 
-```{r}
+```{r warning=FALSE}
+set.seed(100)
+split_obj <- Prostate%>%
+  initial_split(prop = 74.5/97)
+Prostate_tr <- training(split_obj)
+Prostate_te <- testing(split_obj)
+model_main <- lm(lpsa~.,data = Prostate_tr)
+model_with_inter<- lm(lpsa~.+svi*lcavol+svi*lweight+svi * age + svi*lbph + svi*lcp+svi*gleason+svi*pgg45,data = Prostate_tr)
+AIC <- stats::step(model_with_inter,direction  = "both",trace = 0)
+BIC <- stats::step(model_with_inter,direction  = "both",trace = 0, k = log(75))
+RIC <- stats::step(model_with_inter,direction  = "both",trace = 0, k = 2*log(15))
+lambda_cv <- cv.glmnet(model.matrix(model_with_inter),Prostate_tr$lpsa,alpha=1)$lambda.min
+lasso_model <- glmnet(model.matrix(model_with_inter),Prostate_tr$lpsa,alpha=1,lambda = lambda_cv)
+#pcr
+pcr_model <- pcr(lpsa~.,data = Prostate_tr,scale=T,validation="CV")
+summary(pcr_model)
+validationplot(pcr_model, val.type = "R2")
+#pls
+pls_model <- plsr(lpsa~.,data = Prostate_tr,scale=T,validation="CV")
+summary(pls_model)
+validationplot(pls_model, val.type = "R2")
 
+mse_2 = c()
+for (i in 1:length(models)){
+  if (i <= 5){y_pred <- predict(models[[i]],Prostate_te)}
+  if (i==6) {y_pred <- predict(models[[i]],model.matrix(lpsa~.+svi*lcavol+svi*lweight+svi * age + svi*lbph + svi*lcp+svi*gleason+svi*pgg45,Prostate_te))}
+  if (i >6){y_pred <- predict(models[[i]],Prostate_te,ncomp = 3)}
+  mse_2[i] <- mean((y_pred - Prostate_te$lpsa)^2)
+}
+tibble(model = model_names,"mse 1st split" = mse,"mse 2nd split" = mse_2) %>% arrange(mse)
 ```
+
+*We can see a difference in all of the models and even in best model (mse wise)*
+
+*this is not surprising as Nothing can surprise me in this world anymore!*
+
+*but seriously it is not surprising because different training set result in different models, and different testing sets results in different mse assessment, the test mse is an estimation to the expected error, but this estimation has a variance and it is not a constant* 
 
 ## h
 
-```{r}
-
-```
+*our 2 main relevant measurements are lcavol and lweight, as they are a part of every model and has a rather large coefficients. also svi looks important and its interaction with these 2 predictors*
 
