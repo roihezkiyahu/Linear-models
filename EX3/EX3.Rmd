@@ -71,19 +71,19 @@ $$
 \\
 \textrm{plug (2) into (1) using: }\hat\beta_0, \hat\beta_{MLE} = \frac{RSS_{\hat\beta_{MLE}} - RSS_{\hat\beta_0}}{\sigma^2}  \sim \chi_1^2
 \\
-\textrm{the corresponding test statistic } T_j \textrm{ is: } \sqrt{\frac{RSS_{\hat\beta_{MLE}} - RSS_{\hat\beta_0}}{\sigma^2}}
+\textrm{the corresponding test statistic } T_j \textrm{ is: } \frac{RSS_{\hat\beta_{MLE}} - RSS_{\hat\beta_0}}{\sigma^2}
 $$
 
 ## b
 
 $$
-(3)\ C_{p-1} - C_P = \frac{RSS_{p-1} - RSS_p}{\sigma^2} - (n-2p+2) + n-2p = \frac{RSS_{p-1} - RSS_p}{\sigma^2} - 2 = T_j^2-2
+(3)\ C_{p-1} - C_P = \frac{RSS_{p-1} - RSS_p}{\sigma^2} - (n-2p+2) + n-2p = \frac{RSS_{p-1} - RSS_p}{\sigma^2} - 2 = T_j-2
 $$
 
 ## c
 
 $$
-T_j^2 <2 \iff C_{p-1} - C_P >0 \iff \ x_j \textrm{ is not significant and may be dropped out of the model (according to the Mallows' Cp criterion)}
+T_j <2 \iff C_{p-1} - C_P >0 \iff \ x_j \textrm{ is not significant and may be dropped out of the model (according to the Mallows' Cp criterion)}
 \\
 \textrm{the corresponding significance level is }P(\chi^2_1 \ge2) \approx 0.05
 $$
