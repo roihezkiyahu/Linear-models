@@ -1,0 +1,95 @@
+---
+title: "EXAM"
+author: "roi hezkiyahu"
+date: "7 6 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Q1
+
+![](Q1.png)
+
+### I
+
+$$
+Y_{ij} \sim N(\beta^tx_i,\sigma^2) \Rightarrow \bar{Y_i} \sim(\beta^tx_i,\frac{\sigma^2}{m}) \textrm{ as a sum of normal distributions}
+\\
+\textrm{Define } Z^t = (\bar{Y_1},\bar{Y_2},\ldots,\bar{Y_n}) ;\bar{Y_i},\bar{Y_j} \textrm{ are i.i.d } \forall i\ne j
+\\
+\textrm{thus: } Z \sim N(X\beta,\frac{\sigma^2}{m}I)
+\\
+\textrm{the MLE for this case is:}
+\\
+\hat{\beta}_{MLE} = (X^tX)^{-1}X^tZ
+\\
+\hat{\frac{\sigma^2_{MLE}}{m}} = \frac{RSS}{n} \Rightarrow \sigma^2_{MLE} = \frac{m}{n}RSS 
+\\
+\textrm{where } RSS = (Z-X\hat{\beta}_{MLE})^t(Z-X\hat{\beta}_{MLE})
+$$
+
+### II
+
+$$
+E(\hat{\beta}_{MLE}) = E((X^tX)^{-1}X^tZ) = (X^tX)^{-1}X^tE(Z) = (X^tX)^{-1}X^tX\beta = \beta \Rightarrow \hat{\beta}_{MLE} \textrm{ is unbiased}
+\\
+\textrm {we know that } \frac{mRSS}{\sigma^2} \sim \chi^2_{n-p} \Rightarrow E(RSS) = \frac{(n-p)\sigma^2}{m}
+\\
+E(\hat{\sigma^2}_{MLE}) = \frac{m}{n}E(RSS) = \frac{m}{n}E(RSS) = \frac{(n-p)\sigma^2}{n} \Rightarrow \hat{\sigma^2}_{MLE} \textrm{ is biased}
+\\
+\textrm{thus if we take } \hat{S^2} = \frac{m}{n-p}RSS \textrm{ we get an unbiased estimator}
+\\
+E(S^2) = \frac{m}{n-p}E(RSS) = \frac{(n-p)\sigma^2}{n-p} = \sigma^2
+$$
+### III
+
+$$
+\textrm{we calculated the expected value of } \hat{\beta} \textrm{ lets calculate the variance, and keep in mind that it distribute normally as a linear transofrmation of a normal variable}
+\\
+V(\hat{\beta}) = V((X^tX)^{-1}X^tZ) = (X^tX)^{-1}X^tV(Z)X(X^tX)^{-1} = V(Z)(X^tX)^{-1}
+\\
+\hat{\beta} \sim N(\beta,\frac{\sigma^2}{m}(X^tX)^{-1})
+\\
+\textrm{therefor an exact } 100(1-\alpha) \textrm {% confidence interval is:}
+\\
+(\hat{\beta}- Z_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{m}(X^tX)^{-1}},\hat{\beta} + Z_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{m}(X^tX)^{-1}})
+\\
+\textrm{for a bonferroni adjustment all we nee to do is divide } \alpha \textrm{ by p and derive the following: }
+\\
+(\hat{\beta}- Z_{1-\frac{\alpha}{2p}}\sqrt{\frac{\sigma^2}{m}(X^tX)^{-1}},\hat{\beta} + Z_{1-\frac{\alpha}{2p}}\sqrt{\frac{\sigma^2}{m}(X^tX)^{-1}})
+$$
+
+# Q2
+
+![](Q2.png)
+
+# Q3
+
+![](Q3.png)
+
+# Q4
+
+![](Q4.png)
+
+# Q5
+
+![](Q5.png)
+
+# Story
+
+![](S1.png)
+
+![](S2.png)
+
+![](S3.png)
+
+![](S4.png)
+
+![](S5.png)
+
+![](S6.png)
+
+![](S7.png)
